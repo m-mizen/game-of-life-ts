@@ -1,4 +1,3 @@
-// The columns and rows of the grid:
 class GameOfLife{
 
   cols:number = 50
