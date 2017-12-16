@@ -1,6 +1,7 @@
 # Game of life
 
-[Game of life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in [typescript](https://www.typescriptlang.org/]
+[Game of life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in [typescript](https://www.typescriptlang.org/)
+
 Runs pretty slow for now but works.
 
 To compile to javascript, install typescript and run `tsc -t ESNext ./js/main.ts` from the root directory
