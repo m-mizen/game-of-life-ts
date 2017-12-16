@@ -74,7 +74,7 @@ class GameOfLife{
   }
 
   /**
-   * Creates an array of html elements and adds the within the grid element
+   * Creates an array of html elements and appends them to the grid element
    */
   createGridElements():Array<HTMLElement>{
     let workingArray = []
@@ -127,15 +127,15 @@ class GameOfLife{
         // the 'i' coordinate of the cells right
         const right = (i + 1 + this.cols) % this.cols
 
-        // Count neibors
-        if ( currentState[i][up] ) neighbors++
-        if ( currentState[right][up] ) neighbors++
-        if ( currentState[right][j] ) neighbors++
+        // Count living neighbors
+        if ( currentState[i][up] )       neighbors++
+        if ( currentState[right][up] )   neighbors++
+        if ( currentState[right][j] )    neighbors++
         if ( currentState[right][down] ) neighbors++
-        if ( currentState[i][down] ) neighbors++
-        if ( currentState[left][down] ) neighbors++
-        if ( currentState[left][j] ) neighbors++
-        if ( currentState[left][up] ) neighbors++
+        if ( currentState[i][down] )     neighbors++
+        if ( currentState[left][down] )  neighbors++
+        if ( currentState[left][j] )     neighbors++
+        if ( currentState[left][up] )    neighbors++
 
         // Is it now alive?
         if(wasAlive){

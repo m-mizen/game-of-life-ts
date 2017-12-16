@@ -52,7 +52,7 @@ class GameOfLife {
         return workingArray;
     }
     /**
-     * Creates an array of html elements and adds the within the grid element
+     * Creates an array of html elements and appends them to the grid element
      */
     createGridElements() {
         let workingArray = [];
@@ -93,7 +93,7 @@ class GameOfLife {
                 const left = (i - 1 + this.cols) % this.cols;
                 // the 'i' coordinate of the cells right
                 const right = (i + 1 + this.cols) % this.cols;
-                // Count neibors
+                // Count living neighbors
                 if (currentState[i][up])
                     neighbors++;
                 if (currentState[right][up])
