@@ -9,6 +9,7 @@ class GameOfLife{
   gridItems:Array<HTMLElement>
 
   running: boolean = false
+  stable: boolean = false
 
   private step:number = 0;
   private history:Array<Array<Array<boolean>>> = new Array();
@@ -26,31 +27,41 @@ class GameOfLife{
     // get the game node:
     this.game = document.getElementById('game')
 
-    // Create the grid DOM Node
+    // Create the grid element
     this.grid = document.createElement('div')
-
     this.grid.classList.add('container')
 
+    // Set CSS grid columns
     this.grid.setAttribute('style', 'grid-template-columns: repeat('+cols+', 1fr); grid-template-rows: repeat('+rows+', 1fr);')
 
+    // Add click event listener
     this.grid.addEventListener('click', event=>{this.cellClicked(event)})
 
+    // Add grid to game element
     this.game.appendChild(this.grid)
 
     // Create the grid items
     this.gridItems = this.createGridElements()
 
-
   }
 
+  /**
+   * Get current state
+   */
   get state():Array<Array<boolean>>{
     return this.history[this.step]
   }
 
+  /**
+   * Set current state
+   */
   set state(newState:Array<Array<boolean>>){
     this.history[this.step] = newState;
   }
 
+  /**
+   * Creates a new blank grid
+   */
   createGrid():Array<Array<boolean>>{
     let workingArray = []
     for (let i = 0; i < this.cols; i++) {
@@ -62,6 +73,9 @@ class GameOfLife{
     return workingArray;
   }
 
+  /**
+   * Creates an array of html elements and adds the within the grid element
+   */
   createGridElements():Array<HTMLElement>{
     let workingArray = []
     for (let i = 0; i < this.cols; i++) {
@@ -81,20 +95,39 @@ class GameOfLife{
     return workingArray;
   }
 
+  /**
+   * Loops through the previous state and creates the new state
+   */
   updateState(currentState){
+
+    // Net state working array
     let newState = []
+
+    // If the new state is identical to the old state
+    let identical = true
+
     for (let i = 0; i < this.cols; i++) {
       newState.push([])
       for (let j = 0; j < this.rows; j++) {
-        let alive = currentState[i][j]
 
+        // Previously alive
+        let wasAlive = currentState[i][j]
+        // If it will be alive now
+        let nowAlive = false
+
+        // Number of neighboring cells that are alive
         let neighbors = 0;
 
+        // the 'j' coordinate of the cells above
         const up = (j - 1 + this.rows) % this.rows
+        // the 'j' coordinate of the cells below
         const down = (j + 1 + this.rows) % this.rows
+        // the 'i' coordinate of the cells left
         const left = (i - 1 + this.cols) % this.cols
+        // the 'i' coordinate of the cells right
         const right = (i + 1 + this.cols) % this.cols
 
+        // Count neibors
         if ( currentState[i][up] ) neighbors++
         if ( currentState[right][up] ) neighbors++
         if ( currentState[right][j] ) neighbors++
@@ -104,29 +137,43 @@ class GameOfLife{
         if ( currentState[left][j] ) neighbors++
         if ( currentState[left][up] ) neighbors++
 
-        if(alive){
+        // Is it now alive?
+        if(wasAlive){
           if(neighbors < 2 || neighbors > 3){
-            newState[i].push(false)
+            nowAlive = false
           } else {
-            newState[i].push(true)
+            nowAlive = true
           }
         } else {
           if(neighbors == 3){
-            newState[i].push(true)
+            nowAlive = true
           } else {
-            newState[i].push(false)
+            nowAlive = false
           }
         }
 
+        // If different than before then arrays aren't identical
+        if (nowAlive !== wasAlive){
+          identical = false
+        }
+        // Push new sate to working array
+        newState[i].push(nowAlive)
       }
+    }
+
+    // Set stable to true if the arrays are identical
+    if (identical){
+      this.stable = true
     }
     return newState;
   }
 
+  /**
+   * Update the DOM elements to reflect the current state
+   */
   updateElements(){
     for (let i = 0; i < this.cols; i++) {
       for (let j = 0; j < this.rows; j++) {
-        console.log('state '+this.state[i][j], i, j)
         if (this.state[i][j]){
           this.gridItems[ i + (j*this.cols) ].classList.add('alive')
         } else {
@@ -136,6 +183,9 @@ class GameOfLife{
     }
   }
 
+  /**
+   * Go to the next state
+   */
   tick(){
 
     let currentState = this.state
@@ -144,13 +194,16 @@ class GameOfLife{
 
     this.updateElements()
 
-    if (this.running){
+    if (!this.stable && this.running){
       setTimeout( ()=>{
         this.tick()
       }, 200 )
     }
   }
 
+  /**
+   * Start the game
+   */
   play(){
     if (!this.running){
       this.running = true
@@ -158,10 +211,16 @@ class GameOfLife{
     }
   }
 
+  /**
+   * Pause the game
+   */
   pause(){
     this.running = false
   }
 
+  /**
+   * Click event for the cells. 
+   */
   cellClicked(event:Event){
     const target = event.target as HTMLElement
     if (target.classList.contains('cell')){
@@ -178,8 +237,10 @@ class GameOfLife{
 
 }
 
+// Instantiate a new game
 let game = new GameOfLife()
 
+// Add event listeners to the controls
 document.getElementById('play').addEventListener('click', ()=>{game.play()})
 document.getElementById('pause').addEventListener('click', ()=>{game.pause()})
 document.getElementById('step').addEventListener('click', ()=>{ 

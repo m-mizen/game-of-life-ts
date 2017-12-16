@@ -16,3 +16,4 @@ Uses CSS grid to position all of the cells. Won't work on older browsers at all.
 - Add navigation between states with using a range input element
 - Create visual queue that it is playing
 - Make it look better
+- Detect dynamic stabilty
