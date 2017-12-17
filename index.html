@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="css/style.css" rel="stylesheet">
+  <script data-main="js/dist/build" src="js/require.js"></script>
 </head>
 
 <body>
@@ -19,6 +20,10 @@
   </div>
 
   <script src="js/dist/build.js"></script>
+  <script>
+    // Tell RequireJS to load your main module (and its dependencies)
+    require(["main"]);
+  </script>
 </body>
 
 </html>

@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "module": "system",
+    "module": "amd",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "outFile": "js/dist/build.js",
+    "out": "js/dist/build.js",
     "sourceMap": true,
     "target": "esnext"
   },

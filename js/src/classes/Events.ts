@@ -76,6 +76,10 @@ class Events{
     this._hooks[name] = {}
     return true
   }
+
+  get list():Array<string>{
+    return Object.keys(this._hooks)
+  }
 }
 
 export default Events

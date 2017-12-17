@@ -1,5 +1,10 @@
 import GameOfLifeDom from './classes/GameOfLifeDom'
 
+
+declare global {
+  interface Window { gameOfLife: any; }
+}
+
 // Instantiate a new game
 let game = new GameOfLifeDom()
 
@@ -15,3 +20,4 @@ document.getElementById('stop').addEventListener('click', ()=>{
   game = new GameOfLifeDom()
 })
 
+window.gameOfLife = game || {};
