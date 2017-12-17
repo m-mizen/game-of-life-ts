@@ -4,7 +4,7 @@
 
 Runs pretty slow for now but works.
 
-To compile to javascript, install typescript and run `tsc -t ESNext ./js/main.ts` from the root directory
+To compile to javascript, install typescript and run `tsc` from the root directory
 
 Uses CSS grid to position all of the cells. Won't work on older browsers at all.
 

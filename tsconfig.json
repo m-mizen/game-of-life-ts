@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "outFile": "js/dist/build.js",
+    "sourceMap": true,
+    "target": "esnext"
+  },
+  "include": [
+    "./js/src/**/*.ts",
+    "./js/src/**/*.js"
+  ],
+  "compileOnSave": true
+}
