@@ -236,6 +236,13 @@ class GameOfLife{
 
 }
 
+
+class GameOfLifeDom extends GameOfLife{
+  constructor(cols:number = 50, rows:number = 50, selector:string = 'game'){
+    super(cols, rows);
+  }
+}
+
 // Instantiate a new game
 let game = new GameOfLife()
 
