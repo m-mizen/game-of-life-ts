@@ -123,7 +123,7 @@ class GameOfLifeDom extends GameOfLife{
     if (!target.classList.contains('cell')){
       return
     }
-    if (event.type === 'mouseover' && event.buttons !== 1){
+    if (event.type === 'mouseover' && (<any>event).buttons !== 1){
       return
     }
 
