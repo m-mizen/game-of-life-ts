@@ -33,13 +33,11 @@ define("classes/Events", ["require", "exports"], function (require, exports) {
             try {
                 for (const funcName in this._hooks[hook]) {
                     if (this._hooks[hook].hasOwnProperty(funcName)) {
-                        const func = this._hooks[hook][funcName];
-                        func();
+                        this._hooks[hook][funcName]();
                     }
                 }
             }
             catch (e) {
-                console.log(this._hooks[hook]);
                 throw new Error(`Error triggering hook: ${hook}.`);
             }
             return true;
@@ -153,6 +151,9 @@ define("classes/GameOfLife", ["require", "exports", "classes/Events"], function 
             if (identical) {
                 this._stable = true;
             }
+            else {
+                this._stable = false;
+            }
             return newState;
         }
         tick() {
@@ -160,7 +161,11 @@ define("classes/GameOfLife", ["require", "exports", "classes/Events"], function 
             this._step++;
             this.state = this.updateState(currentState);
             this.events.trigger('tick');
-            if (!this.stable && this.running) {
+            if (this.stable) {
+                this._running = false;
+                return;
+            }
+            if (this.running) {
                 setTimeout(() => {
                     this.tick();
                 }, 200);
@@ -185,13 +190,21 @@ define("classes/GameOfLifeDom", ["require", "exports", "classes/GameOfLife"], fu
         constructor(cols = 50, rows = 50, selector = 'game') {
             super(cols, rows);
             this.game = document.getElementById(selector);
+            this.game.style.position = 'relative';
             this.grid = document.createElement('div');
-            this.grid.classList.add('container');
-            this.grid.setAttribute('style', 'grid-template-columns: repeat(' + cols + ', 1fr); grid-template-rows: repeat(' + rows + ', 1fr);');
+            this.grid.classList.add('game-container');
+            this.grid.setAttribute('style', 'grid-template-columns: repeat(' + cols + ', 1fr);' +
+                'grid-template-rows: repeat(' + rows + ', 1fr);' +
+                'display: grid;' +
+                'grid-gap: 1px 1px;');
             this.grid.addEventListener('click', event => { this.cellClicked(event); });
+            this.grid.addEventListener('mouseover', event => { this.cellClicked(event); });
             this.game.appendChild(this.grid);
             this.gridItems = this.createGridElements();
+            this.stepCounter = this.createCounter();
+            this.game.appendChild(this.stepCounter);
             this.events.subscribe('tick', 'updateDOM', () => { this.updateElements(); });
+            this.events.subscribe('tick', 'updateCounter', () => { this.updateCounter(); });
         }
         updateElements() {
             for (let i = 0; i < this.cols; i++) {
@@ -219,18 +232,31 @@ define("classes/GameOfLifeDom", ["require", "exports", "classes/GameOfLife"], fu
             }
             return workingArray;
         }
+        createCounter() {
+            let element = document.createElement('div');
+            element.classList.add('game-counter');
+            element.innerText = '0';
+            return element;
+        }
+        updateCounter() {
+            this.stepCounter.innerText = this.step.toString();
+        }
         cellClicked(event) {
             const target = event.target;
-            if (target.classList.contains('cell')) {
-                const col = parseInt(target.dataset.column);
-                const row = parseInt(target.dataset.row);
-                this.history[this.step][col][row] = !this.history[this.step][col][row];
-                if (this.history[this.step][col][row]) {
-                    this.gridItems[col + (row * this.cols)].classList.add('alive');
-                }
-                else {
-                    this.gridItems[col + (row * this.cols)].classList.remove('alive');
-                }
+            if (!target.classList.contains('cell')) {
+                return;
+            }
+            if (event.type === 'mouseover' && event.buttons !== 1) {
+                return;
+            }
+            const col = parseInt(target.dataset.column);
+            const row = parseInt(target.dataset.row);
+            this.history[this.step][col][row] = !this.history[this.step][col][row];
+            if (this.history[this.step][col][row]) {
+                this.gridItems[col + (row * this.cols)].classList.add('alive');
+            }
+            else {
+                this.gridItems[col + (row * this.cols)].classList.remove('alive');
             }
         }
     }

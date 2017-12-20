@@ -13,10 +13,42 @@
 
   <div id="game"></div>
   <div class="controls">
-    <button id="play">play</button>
-    <button id="pause">pause</button>
-    <button id="step">step</button>
-    <button id="stop">clear</button>
+    <div class="controls-inner">
+      <button id="play" title="Play">
+        <svg height="20" width="20">
+          <title>Play</title>
+          <g>
+            <polygon points="0,0 20,10 0,20" fill="#ffffff"></polygon>
+          </g>
+        </svg>
+      </button>
+      <button id="pause" title="Pause">
+          <svg height="20" width="20">
+            <title>Pause</title>
+            <g>
+              <polygon points="3,0 8,0 8,20 3,20"></polygon>
+              <polygon points="12,0 17,0 17,20 12,20"></polygon>
+            </g>
+          </svg>
+      </button>
+      <button id="step" title="Step">
+        <svg height="20" width="20">
+          <title>Step</title>
+          <g>
+            <polygon points="0,0 16,10 0,20"></polygon>
+            <polygon points="16,0 20,0 20,20 16,20"></polygon>
+          </g>
+        </svg>
+      </button>
+      <button id="stop" title="Reset">
+        <svg height="20" width="20">
+            <title>Clear</title>
+            <g>
+              <polygon points="0,0 20,0 20,20 0,20"></polygon>
+            </g>
+          </svg>
+      </button>
+    </div>
   </div>
 
   <script src="js/dist/build.js"></script>

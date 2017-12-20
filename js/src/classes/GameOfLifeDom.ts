@@ -11,6 +11,8 @@ class GameOfLifeDom extends GameOfLife{
   protected grid:HTMLElement
   // Grid item elements
   protected gridItems:Array<HTMLElement>
+  // Step counter
+  protected stepCounter:HTMLElement
 
   /**
    * Constructor
@@ -20,16 +22,22 @@ class GameOfLifeDom extends GameOfLife{
 
     // get the game node:
     this.game = document.getElementById(selector)
+    this.game.style.position = 'relative';
   
     // Create the grid element
     this.grid = document.createElement('div')
-    this.grid.classList.add('container')
+    this.grid.classList.add('game-container')
 
     // Set CSS grid columns
-    this.grid.setAttribute('style', 'grid-template-columns: repeat('+cols+', 1fr); grid-template-rows: repeat('+rows+', 1fr);')
+    this.grid.setAttribute('style', 
+    'grid-template-columns: repeat('+cols+', 1fr);' +
+    'grid-template-rows: repeat('+rows+', 1fr);' + 
+    'display: grid;'+
+    'grid-gap: 1px 1px;')
 
     // Add click event listener
     this.grid.addEventListener('click', event=>{this.cellClicked(event)})
+    this.grid.addEventListener('mouseover', event=>{this.cellClicked(event)})
 
     // Add grid to game element
     this.game.appendChild(this.grid)
@@ -37,7 +45,13 @@ class GameOfLifeDom extends GameOfLife{
     // Create the grid items
     this.gridItems = this.createGridElements()
 
+    // Create the step counter:
+    this.stepCounter = this.createCounter()
+    this.game.appendChild(this.stepCounter)
+
+    // Add event hooks:
     this.events.subscribe('tick', 'updateDOM', ()=>{this.updateElements()})
+    this.events.subscribe('tick', 'updateCounter', ()=>{this.updateCounter()})
   }
 
   /**
@@ -82,6 +96,23 @@ class GameOfLifeDom extends GameOfLife{
   }
 
   /**
+   * Create grid counter to display the current step
+   */
+  createCounter():HTMLElement{
+    let element = document.createElement('div')
+    element.classList.add('game-counter')
+    element.innerText = '0'
+    return element
+  }
+
+  /**
+   * Update the counter element
+   */
+  updateCounter():void{
+    this.stepCounter.innerText = this.step.toString();
+  }
+
+  /**
    * Click event for the cells. 
    */
   cellClicked(event:Event){
@@ -89,18 +120,23 @@ class GameOfLifeDom extends GameOfLife{
     const target = event.target as HTMLElement
 
     // Check that it is a cell that was clicked
-    if (target.classList.contains('cell')){
-      // Get the column and row from the data values
-      const col = parseInt(target.dataset.column)
-      const row = parseInt(target.dataset.row)
-      // Update the alive state
-      this.history[this.step][col][row] = !this.history[this.step][col][row]
-      // Set the class of the item to reflect if it is alive or not
-      if (this.history[this.step][col][row]){
-        this.gridItems[ col + (row*this.cols) ].classList.add('alive')
-      } else {
-        this.gridItems[ col + (row*this.cols) ].classList.remove('alive')
-      }
+    if (!target.classList.contains('cell')){
+      return
+    }
+    if (event.type === 'mouseover' && event.buttons !== 1){
+      return
+    }
+
+    // Get the column and row from the data values
+    const col = parseInt(target.dataset.column)
+    const row = parseInt(target.dataset.row)
+    // Update the alive state
+    this.history[this.step][col][row] = !this.history[this.step][col][row]
+    // Set the class of the item to reflect if it is alive or not
+    if (this.history[this.step][col][row]){
+      this.gridItems[ col + (row*this.cols) ].classList.add('alive')
+    } else {
+      this.gridItems[ col + (row*this.cols) ].classList.remove('alive')
     }
   }
 }

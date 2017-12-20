@@ -151,6 +151,8 @@ class GameOfLife{
     // Set stable to true if the arrays are identical
     if (identical){
       this._stable = true
+    } else {
+      this._stable = false
     }
     return newState;
   }
@@ -166,7 +168,12 @@ class GameOfLife{
 
     this.events.trigger('tick')
 
-    if (!this.stable && this.running){
+    if (this.stable){
+      this._running = false;
+      return;
+    }
+
+    if (this.running){
       setTimeout( ()=>{
         this.tick()
       }, 200 )

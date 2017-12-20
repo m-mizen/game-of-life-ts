@@ -55,12 +55,10 @@ class Events{
     try{
       for (const funcName in this._hooks[hook]) {
         if (this._hooks[hook].hasOwnProperty(funcName)) {
-          const func = this._hooks[hook][funcName];
-          func()
+          this._hooks[hook][funcName]();
         }
       }
     } catch (e){
-      console.log(this._hooks[hook])
       throw new Error(`Error triggering hook: ${hook}.`)
     }
     return true
